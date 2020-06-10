@@ -29,42 +29,54 @@ let calculate = {
 }
 
 let operates = {
-  operate1: "",
-  operate2: "",
+  operate1: [],
+  operate2: [],
   operator: "",
   firstOperate: function(e) {
-    if(this.operate1 === "") {
+    if(this.operate1.length === 0) {
       display.textContent = "";
     };
-    this.operate1 += e.target.textContent;
-    display.textContent += e.target.textContent;
+    this.operate1.push(+e.target.textContent);
+    display.textContent = `${operates.operate1.join("")}`;
     console.log(`operate1: ${this.operate1}`)
   },
   secondOperate: function(e) {
-    this.operate2 += e.target.textContent;
-    display.textContent += e.target.textContent;
+    this.operate2.push(+e.target.textContent);
+    display.textContent = `${operates.operate1.join("")} ${operates.operator} ${operates.operate2.join("")}`;
     console.log(`operate2: ${this.operate2}`);
   },
   setOperator: function(e) {
     if(e.target.classList.contains('operator')) {
       this.operator = e.target.textContent;
-      display.textContent += ` ${this.operator} `;
+      display.textContent = `${operates.operate1.join("")} ${operates.operator}`;
       console.log(`operator: ${this.operator}`);
     }
   },
   resetOperates: function() {
-    operates.operate1 = "";
-    operates.operate2 = "";
+    operates.operate1 = [];
+    operates.operate2 = [];
     operates.operator = "";
   }
 }
 
 let deleteNum = {
-  del: function(e) {
-
+  del: function() {
+    if(operates.operator === "" && operates.operate2.length === 0) {
+      operates.operate1.pop();
+      display.textContent = `${operates.operate1.join("")}`;
+      console.log(operates.operate1);
+    } else if(operates.operator !== "" && operates.operate2.length === 0) {
+      operates.operator = "";
+      display.textContent = `${operates.operate1.join("")}`;
+    } else if(operates.operate1.length > 0 && operates.operator !== "") {
+      operates.operate2.pop();
+      display.textContent = `${operates.operate1.join("")} ${operates.operator} ${operates.operate2.join("")}`;
+      console.log(operates.operate2);
+    }
   },
-  clear: function(e) {
-
+  clear: function() {
+    operates.resetOperates();
+    display.textContent = "0";
   }
 }
 
@@ -79,8 +91,14 @@ calculator.addEventListener('click', e => {
       operates.setOperator(e);
     }
     if(e.target.textContent === "=") {
-      display.textContent = calculate.operate(operates.operator, +(operates.operate1), +operates.operate2);
+      display.textContent = calculate.operate(operates.operator, +(operates.operate1.join("")), +operates.operate2.join(""));
       operates.resetOperates();
+    }
+    if(e.target.textContent === "C") {
+      deleteNum.clear();
+    }
+    if(e.target.textContent === "DEL") {
+      deleteNum.del();
     }
   }
 });
