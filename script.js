@@ -34,7 +34,7 @@ let operates = {
   operator: "",
   firstOperate: function(e) {
     if(this.operate1.length === 0) {
-      display.textContent = "";
+      display.textContent = "0";
     };
     this.operate1.push(+e.target.textContent);
     display.textContent = `${operates.operate1.join("")}`;
@@ -64,14 +64,15 @@ let deleteNum = {
     if(operates.operator === "" && operates.operate2.length === 0) {
       operates.operate1.pop();
       display.textContent = `${operates.operate1.join("")}`;
-      console.log(operates.operate1);
     } else if(operates.operator !== "" && operates.operate2.length === 0) {
       operates.operator = "";
       display.textContent = `${operates.operate1.join("")}`;
     } else if(operates.operate1.length > 0 && operates.operator !== "") {
       operates.operate2.pop();
       display.textContent = `${operates.operate1.join("")} ${operates.operator} ${operates.operate2.join("")}`;
-      console.log(operates.operate2);
+    }
+    if(operates.operate1.length === 0) {
+      display.textContent = "0";
     }
   },
   clear: function() {
@@ -82,15 +83,20 @@ let deleteNum = {
 
 calculator.addEventListener('click', e => {
   if(e.target.classList.contains('btn')) {
-    if(display.textContent === "0") { display.textContent = "" };
+    if(display.textContent === "0") { display.textContent = "0" };
     if(e.target.classList.contains('num') && operates.operator !== "") {
       operates.secondOperate(e);
     } else if(e.target.classList.contains('num') && operates.operator === "") {
       operates.firstOperate(e);
     } else if(e.target.classList.contains('operator') && operates.operate1 != "") {
+      if(e.target.classList.contains('operator') && operates.operate2.length !== 0) {
+        operates.operate1 = calculate.operate(operates.operator, +(operates.operate1.join("")), +operates.operate2.join(""));
+        operates.operate1 = String(operates.operate1).split("");
+        operates.operate2 = [];
+      }
       operates.setOperator(e);
     }
-    if(e.target.textContent === "=") {
+    if(e.target.textContent === "=" && operates.operate2.length > 0) {
       display.textContent = calculate.operate(operates.operator, +(operates.operate1.join("")), +operates.operate2.join(""));
       operates.resetOperates();
     }
@@ -102,9 +108,3 @@ calculator.addEventListener('click', e => {
     }
   }
 });
-
-
-
-
-
-
