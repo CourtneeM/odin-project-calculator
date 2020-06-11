@@ -43,7 +43,7 @@ let operates = {
   secondOperate: function(e) {
     this.operate2.push(+e.target.textContent);
     display.textContent = `${operates.operate1.join("")} ${operates.operator} ${operates.operate2.join("")}`;
-    console.log(`operate2: ${this.operate2}`);
+    console.log(String(this.operate2));
   },
   setOperator: function(e) {
     if(e.target.classList.contains('operator')) {
@@ -97,7 +97,11 @@ calculator.addEventListener('click', e => {
       operates.setOperator(e);
     }
     if(e.target.textContent === "=" && operates.operate2.length > 0) {
-      display.textContent = calculate.operate(operates.operator, +(operates.operate1.join("")), +operates.operate2.join(""));
+      if(operates.operator === "/" && String(operates.operate2) === "0") {
+        display.textContent = "ERROR: DIVIDING BY ZERO WILL DESTROY SPACETIME CONTINUUM"
+      } else {
+        display.textContent = calculate.operate(operates.operator, +(operates.operate1.join("")), +operates.operate2.join(""));
+      }
       operates.resetOperates();
     }
     if(e.target.textContent === "C") {
