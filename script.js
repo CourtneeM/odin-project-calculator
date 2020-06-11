@@ -32,15 +32,31 @@ let operates = {
   operate1: [],
   operate2: [],
   operator: "",
+  dec: false,
   firstOperate: function(e) {
     if(this.operate1.length === 0) {
       display.textContent = "0";
-    };
+    }
+    if (e.target.textContent === "." && this.dec) {
+      return;
+    }
+    if(e.target.textContent === ".") {
+      this.dec = true;
+    }
+
     this.operate1.push(e.target.textContent);
-    display.textContent = `${operates.operate1.join("")}`;
+    display.textContent = `${operates.operate1.join("")}`; 
+    console.log(this.dec);
     console.log(`operate1: ${this.operate1}`)
   },
   secondOperate: function(e) {
+    if (e.target.textContent === "." && this.dec) {
+      return;
+    }
+    if(e.target.textContent === ".") {
+      this.dec = true;
+    }
+
     this.operate2.push(e.target.textContent);
     display.textContent = `${operates.operate1.join("")} ${operates.operator} ${operates.operate2.join("")}`;
     console.log(String(this.operate2));
@@ -51,11 +67,13 @@ let operates = {
       display.textContent = `${operates.operate1.join("")} ${operates.operator}`;
       console.log(`operator: ${this.operator}`);
     }
+    this.dec = false;
   },
   resetOperates: function() {
     operates.operate1 = [];
     operates.operate2 = [];
     operates.operator = "";
+    operates.dec = false;
   }
 }
 
@@ -90,7 +108,7 @@ calculator.addEventListener('click', e => {
       operates.firstOperate(e);
     } else if(e.target.classList.contains('operator') && operates.operate1 != "") {
       if(e.target.classList.contains('operator') && operates.operate2.length !== 0) {
-        operates.operate1 = calculate.operate(operates.operator, +(operates.operate1.join("")), +operates.operate2.join(""));
+        operates.operate1 = +String((calculate.operate(operates.operator, +operates.operate1.join(""), +operates.operate2.join(""))).toFixed(8));
         operates.operate1 = String(operates.operate1).split("");
         operates.operate2 = [];
       }
@@ -100,7 +118,8 @@ calculator.addEventListener('click', e => {
       if(operates.operator === "/" && String(operates.operate2) === "0") {
         display.textContent = "ERROR: DIVIDING BY ZERO WILL DESTROY SPACETIME CONTINUUM"
       } else {
-        display.textContent = calculate.operate(operates.operator, +(operates.operate1.join("")), +operates.operate2.join(""));
+        // .toFixed() will set a limit for decimal length. String() will remove trailing zeros. + converts back to number 
+        display.textContent = +String((calculate.operate(operates.operator, +operates.operate1.join(""), +operates.operate2.join(""))).toFixed(8));
       }
       operates.resetOperates();
     }
