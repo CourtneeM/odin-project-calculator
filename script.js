@@ -36,12 +36,12 @@ let operates = {
     if(this.operate1.length === 0) {
       display.textContent = "0";
     };
-    this.operate1.push(+e.target.textContent);
+    this.operate1.push(e.target.textContent);
     display.textContent = `${operates.operate1.join("")}`;
     console.log(`operate1: ${this.operate1}`)
   },
   secondOperate: function(e) {
-    this.operate2.push(+e.target.textContent);
+    this.operate2.push(e.target.textContent);
     display.textContent = `${operates.operate1.join("")} ${operates.operator} ${operates.operate2.join("")}`;
     console.log(String(this.operate2));
   },
